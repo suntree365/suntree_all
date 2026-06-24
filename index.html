@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', sans-serif; color: var(--main-text); background-color: #ffffff; line-height: 1.6; }
+        body { font-family: 'Pretendard', sans-serif; color: var(--main-text); background-color: #ffffff; line-height: 1.6; -webkit-tap-highlight-color: transparent; }
         a { text-decoration: none; color: inherit; }
 
         /* ========================================== */
@@ -63,8 +63,8 @@
             position: absolute; display: flex; flex-direction: column; align-items: center;
             cursor: pointer; z-index: 10; transform: translate(-50%, -50%);
         }
-        /* 💡 겹침 방지: 마우스를 올리면 맨 앞으로 나옴 */
-        .map-pin:hover, .map-pin.active { z-index: 20; }
+        /* 💡 겹침 방지: 마우스를 올리거나 활성화되면 맨 앞으로 나옴 */
+        .map-pin:hover, .map-pin.active { z-index: 100; }
         
         .pin-dot {
             width: 14px; height: 14px; background-color: var(--main-orange);
@@ -83,7 +83,7 @@
             pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* 마우스 호버 시 강조 및 이름표 등장 */
+        /* 마우스 호버 및 활성화(클릭) 시 강조 및 이름표 등장 */
         .map-pin:hover .pin-dot, .map-pin.active .pin-dot {
             background-color: var(--main-orange); transform: scale(1.4);
             box-shadow: 0 0 15px rgba(230, 138, 0, 0.8);
@@ -120,6 +120,7 @@
         }
         .branch-card:hover, .branch-card.active {
             border-color: var(--main-orange); box-shadow: 0 10px 25px rgba(230, 138, 0, 0.08); transform: translateY(-2px);
+            background-color: #fffaf5;
         }
         .branch-card:hover::after, .branch-card.active::after { opacity: 1; transform: translateX(0); }
         
@@ -131,8 +132,9 @@
         @media screen and (max-width: 768px) {
             .container { flex-direction: column; gap: 30px; }
             .map-wrapper { width: 100%; padding: 20px; min-height: 350px; }
-            .branch-sidebar { width: 100%; max-height: 500px; }
+            .branch-sidebar { width: 100%; max-height: none; overflow: visible; padding-right: 0; }
             .intro-section h1 { font-size: 28px; }
+            .sidebar-header { position: relative; }
         }
     </style>
 </head>
@@ -148,12 +150,9 @@
     </section>
 
     <div class="container">
-        <!-- [좌측] 대한민국 전국 일러스트 지도 -->
         <div class="map-wrapper">
-            <!-- 💡 준비하신 전국 일러스트 지도 이미지 파일명(korea_map.png 등)을 연결해 주세요 -->
             <img src="korea_map.png" alt="대한민국 지도 일러스트" style="width: 100%; max-width: 400px; height: auto;">
 
-            <!-- 📌 대략적인 전국 지도 핀 위치 (서울/경기 지역은 오밀조밀하게 배치됨) -->
             <div class="map-pin" style="top: 15%; left: 40%;" data-target="branch10"><span class="pin-dot"></span><span class="pin-label">문산점</span></div>
             <div class="map-pin" style="top: 20%; left: 42%;" data-target="branch04"><span class="pin-dot"></span><span class="pin-label">서대문점</span></div>
             <div class="map-pin" style="top: 24%; left: 45%;" data-target="branch03"><span class="pin-dot"></span><span class="pin-label">구로점</span></div>
@@ -170,7 +169,6 @@
             <div class="map-pin" style="top: 62%; left: 45%;" data-target="branch12"><span class="pin-dot"></span><span class="pin-label">전주중화산점</span></div>
         </div>
 
-        <!-- [우측] 지점 상세 리스트 (12곳 전체 노출) -->
         <div class="branch-sidebar">
             <div class="sidebar-header">
                 <h2 id="sidebar-title">전국 지점 리스트 <span>(12곳)</span></h2>
@@ -215,45 +213,89 @@
         </div>
     </div>
 
-    <!-- 인터랙션 스크립트 -->
     <script>
         const pins = document.querySelectorAll('.map-pin');
         const cards = document.querySelectorAll('.branch-card');
-        const sidebar = document.querySelector('.branch-sidebar'); // 우측 리스트 공간 지정
+        const sidebar = document.querySelector('.branch-sidebar');
 
         pins.forEach(pin => {
-            pin.addEventListener('mouseenter', () => {
+            // 클릭 이벤트 (모바일 대응 및 2단계 동작 구현)
+            pin.addEventListener('click', (e) => {
                 const targetId = pin.getAttribute('data-target');
                 const targetCard = document.querySelector(`.branch-card[data-id="${targetId}"]`);
-                if(targetCard) {
+                const isMobile = window.innerWidth <= 768;
+
+                // 💡 [2단계 클릭] 이미 활성화된 핀을 한 번 더 누르면 해당 카드로 스크롤 이동
+                if (pin.classList.contains('active')) {
+                    if (isMobile && targetCard) {
+                        // 모바일: 전체 화면(window)을 카드 위치로 부드럽게 스크롤
+                        const cardTop = targetCard.getBoundingClientRect().top + window.pageYOffset - 110;
+                        window.scrollTo({ top: cardTop, behavior: 'smooth' });
+                    } else if (targetCard) {
+                        // PC: 우측 사이드바 내부 스크롤 유지
+                        const scrollOffset = sidebar.scrollTop + (targetCard.getBoundingClientRect().top - sidebar.getBoundingClientRect().top) - (sidebar.clientHeight / 2) + (targetCard.clientHeight / 2);
+                        sidebar.scrollTo({ top: scrollOffset, behavior: 'smooth' });
+                    }
+                    return; // 이동 후 로직 종료
+                }
+
+                // 💡 [1단계 클릭] 처음 누른 핀이면 활성화만 시키고 이름표(라벨) 노출
+                pins.forEach(p => p.classList.remove('active'));
+                cards.forEach(c => c.classList.remove('active'));
+
+                pin.classList.add('active');
+                if (targetCard) {
                     targetCard.classList.add('active');
                     
-                    // 💡 핵심 수정: 홈페이지 전체 스크롤을 막고, 우측 리스트 안에서만 중앙으로 오도록 직접 위치를 계산함
-                    const cardRect = targetCard.getBoundingClientRect();
-                    const sidebarRect = sidebar.getBoundingClientRect();
-                    
-                    // 해당 카드가 리스트의 정중앙에 오도록 계산
-                    const scrollOffset = sidebar.scrollTop + (cardRect.top - sidebarRect.top) - (sidebarRect.height / 2) + (cardRect.height / 2);
-                    
-                    sidebar.scrollTo({
-                        top: scrollOffset,
-                        behavior: 'smooth'
-                    });
+                    // PC 환경에서는 첫 클릭 시에도 사이드바가 부드럽게 스크롤되도록 지원
+                    if (!isMobile) {
+                        const scrollOffset = sidebar.scrollTop + (targetCard.getBoundingClientRect().top - sidebar.getBoundingClientRect().top) - (sidebar.clientHeight / 2) + (targetCard.clientHeight / 2);
+                        sidebar.scrollTo({ top: scrollOffset, behavior: 'smooth' });
+                    }
                 }
             });
-            pin.addEventListener('mouseleave', () => {
-                cards.forEach(card => card.classList.remove('active'));
+
+            // PC 환경을 위한 마우스 호버(mouseenter) 기능 자연스럽게 유지
+            pin.addEventListener('mouseenter', () => {
+                if (window.innerWidth > 768) {
+                    const targetId = pin.getAttribute('data-target');
+                    const targetCard = document.querySelector(`.branch-card[data-id="${targetId}"]`);
+                    
+                    pins.forEach(p => p.classList.remove('active'));
+                    cards.forEach(c => c.classList.remove('active'));
+                    
+                    pin.classList.add('active');
+                    if (targetCard) {
+                        targetCard.classList.add('active');
+                        
+                        const scrollOffset = sidebar.scrollTop + (targetCard.getBoundingClientRect().top - sidebar.getBoundingClientRect().top) - (sidebar.clientHeight / 2) + (targetCard.clientHeight / 2);
+                        sidebar.scrollTo({ top: scrollOffset, behavior: 'smooth' });
+                    }
+                }
             });
         });
 
+        // 카드에 마우스 올렸을 때 지도 핀 활성화 로직 유지
         cards.forEach(card => {
             card.addEventListener('mouseenter', () => {
+                if (window.innerWidth > 768) {
+                    const id = card.getAttribute('data-id');
+                    const targetPin = document.querySelector(`.map-pin[data-target="${id}"]`);
+                    pins.forEach(p => p.classList.remove('active'));
+                    cards.forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    if (targetPin) targetPin.classList.add('active');
+                }
+            });
+            
+            // 모바일에서 카드를 직접 터치했을 때도 해당 핀이 활성화되도록 지원
+            card.addEventListener('click', () => {
                 const id = card.getAttribute('data-id');
                 const targetPin = document.querySelector(`.map-pin[data-target="${id}"]`);
-                if(targetPin) targetPin.classList.add('active');
-            });
-            card.addEventListener('mouseleave', () => {
-                pins.forEach(pin => pin.classList.remove('active'));
+                pins.forEach(p => p.classList.remove('active'));
+                cards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                if (targetPin) targetPin.classList.add('active');
             });
         });
     </script>
