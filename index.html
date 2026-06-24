@@ -270,20 +270,49 @@
                 flex-direction: column;
                 gap: 30px;
             }
-            :root { --map-height: 380px; }
+            /* 세로 배치 시 지도 높이를 충분히 확보 */
+            :root { --map-height: 520px; }
+            .map-wrapper { padding: 16px; }
             .intro-section h1 { font-size: 26px; }
             .branch-card { flex: 0 0 185px; }
+
+            /* 모바일에서 핀 크기 확대 */
+            .pin-dot {
+                width: 18px; height: 18px;
+                border: 3px solid #ffffff;
+            }
+            .pin-label {
+                font-size: 14px; padding: 6px 14px;
+            }
+            /* 모바일에서는 라벨 항상 표시 (터치 환경이라 hover 없음) */
+            .map-pin .pin-label {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                pointer-events: auto;
+            }
         }
 
         @media screen and (max-width: 480px) {
-            :root { --map-height: 300px; }
+            :root { --map-height: 420px; }
             .intro-section h1 { font-size: 22px; }
             .intro-section p { font-size: 15px; }
+            .page-content { padding: 0 12px 60px 12px; }
             .region-header h2, .cards-section-header h2 { font-size: 17px; }
             .branch-card { flex: 0 0 165px; padding: 14px 12px; }
             .branch-name { font-size: 14px; }
             .branch-info { font-size: 12px; }
-            .map-wrapper { padding: 16px; }
+            .map-wrapper { padding: 12px; border-radius: 16px; }
+
+            /* 핀 더 크게 */
+            .pin-dot {
+                width: 20px; height: 20px;
+                border: 3px solid #ffffff;
+                box-shadow: 0 0 12px rgba(230, 138, 0, 0.5);
+            }
+            .pin-label {
+                font-size: 13px; padding: 5px 10px;
+                margin-top: 4px;
+            }
         }
     </style>
 </head>
