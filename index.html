@@ -17,7 +17,6 @@
             --sub-text: #666666;
             --bg-light: #f8f9fa;
             --border-color: #eaeaea;
-            --map-height: 520px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,7 +35,7 @@
         .logo span { color: var(--main-orange); }
 
         .intro-section {
-            text-align: center; padding: 60px 20px 50px 20px;
+            text-align: center; padding: 60px 20px 40px 20px;
             background: linear-gradient(to bottom, var(--bg-light) 0%, #ffffff 100%);
         }
         .intro-section h1 { font-size: 38px; font-weight: 800; margin-bottom: 15px; letter-spacing: -1px; }
@@ -44,96 +43,27 @@
         .intro-section p { font-size: 18px; color: var(--sub-text); max-width: 600px; margin: 0 auto; word-break: keep-all; }
 
         /* ========================================== */
-        /* 3. 전체 콘텐츠 래퍼 */
+        /* 3. 지도 및 지점 리스트 레이아웃 */
         /* ========================================== */
-        .page-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px 80px 24px;
+        .container {
+            max-width: 1200px; margin: 0 auto; padding: 0 20px 80px 20px;
+            display: flex; gap: 50px; align-items: flex-start;
         }
 
-        /* ========================================== */
-        /* 4. 두 지도 나란히 배치 */
-        /* ========================================== */
-        .maps-row {
-            display: flex;
-            gap: 24px;
-            align-items: stretch; /* 높이 맞춤 핵심 */
-            margin-bottom: 28px;
-        }
-
-        .map-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            min-width: 0;
-        }
-
-        /* 섹션 헤더 */
-        .region-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-        .region-header h2 {
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            white-space: nowrap;
-        }
-        .region-header h2 span { color: var(--main-orange); }
-        .region-badge {
-            display: inline-flex; align-items: center; justify-content: center;
-            background-color: var(--main-orange); color: #fff;
-            font-size: 12px; font-weight: 700; padding: 3px 12px;
-            border-radius: 20px; white-space: nowrap;
-        }
-        .region-header-line {
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(to right, var(--main-orange) 0%, transparent 100%);
-            border-radius: 2px;
-        }
-
-        /* 지도 박스 — 고정 높이로 통일 */
+        /* [좌측] 대한민국 지도 영역 (일러스트 지도) */
         .map-wrapper {
-            flex: 1;
-            position: relative;
-            background-color: var(--bg-light);
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-            height: var(--map-height);
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
+            flex: 1.2; position: relative; background-color: var(--bg-light);
+            border-radius: 24px; padding: 40px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            min-height: 500px;
         }
 
-        .map-layer {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* 이미지: 컨테이너에 맞춰 비율 유지하며 꽉 채움 */
-        .map-layer img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        /* 지도 위 핀 */
+        /* 지도 위 지점 핀(Pin) 스타일 */
         .map-pin {
             position: absolute; display: flex; flex-direction: column; align-items: center;
             cursor: pointer; z-index: 10; transform: translate(-50%, -50%);
         }
+        /* 💡 겹침 방지: 마우스를 올리면 맨 앞으로 나옴 */
         .map-pin:hover, .map-pin.active { z-index: 20; }
         
         .pin-dot {
@@ -141,178 +71,68 @@
             border: 3px solid #ffffff; border-radius: 50%;
             box-shadow: 0 0 10px rgba(230, 138, 0, 0.4); transition: all 0.3s ease;
         }
+
+        /* 이름표 기본 숨김 */
         .pin-label {
             background-color: #ffffff; color: var(--main-text);
-            font-size: 13px; font-weight: 800; padding: 5px 12px;
-            border-radius: 20px; margin-top: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            font-size: 15px; font-weight: 800; padding: 6px 14px;
+            border-radius: 20px; margin-top: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             white-space: nowrap; border: 2px solid var(--border-color);
             position: absolute; top: 100%;
-            opacity: 0; transform: translateY(8px) scale(0.9);
+            opacity: 0; transform: translateY(10px) scale(0.9);
             pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
+        /* 마우스 호버 시 강조 및 이름표 등장 */
         .map-pin:hover .pin-dot, .map-pin.active .pin-dot {
             background-color: var(--main-orange); transform: scale(1.4);
             box-shadow: 0 0 15px rgba(230, 138, 0, 0.8);
         }
         .map-pin:hover .pin-label, .map-pin.active .pin-label {
             background-color: var(--main-orange); color: #ffffff; border-color: var(--main-orange);
-            opacity: 1; transform: translateY(0) scale(1.1);
+            opacity: 1; transform: translateY(0) scale(1.15);
         }
 
-        /* ========================================== */
-        /* 5. 통합 카드 가로 스크롤 */
-        /* ========================================== */
-        .cards-section-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
+        /* [우측] 지점 리스트 카드 영역 (스크롤바) */
+        .branch-sidebar {
+            flex: 1; display: flex; flex-direction: column; gap: 16px;
+            max-height: 650px; overflow-y: auto; padding-right: 15px;
         }
-        .cards-section-header h2 {
-            font-size: 20px; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap;
-        }
-        .cards-section-header h2 span { color: var(--main-orange); }
+        .branch-sidebar::-webkit-scrollbar { width: 6px; }
+        .branch-sidebar::-webkit-scrollbar-thumb { background-color: #cccccc; border-radius: 10px; }
+        .branch-sidebar::-webkit-scrollbar-track { background-color: var(--bg-light); border-radius: 10px; }
 
-        .card-scroll-area {
-            position: relative;
+        .sidebar-header {
+            position: sticky; top: 0; background: #fff; padding-bottom: 10px; z-index: 5;
+            border-bottom: 2px solid var(--main-text); margin-bottom: 10px;
         }
-
-        .card-scroll-track {
-            display: flex;
-            gap: 14px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 8px 4px 18px 4px;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .card-scroll-track::-webkit-scrollbar { height: 6px; }
-        .card-scroll-track::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 10px; }
-        .card-scroll-track::-webkit-scrollbar-thumb:hover { background-color: var(--main-orange); }
-        .card-scroll-track::-webkit-scrollbar-track { background-color: var(--bg-light); border-radius: 10px; }
-
-        /* 스크롤 화살표 */
-        .scroll-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-60%);
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: #ffffff;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
-            cursor: pointer;
-            z-index: 10;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; color: var(--main-text); font-weight: 700;
-            transition: all 0.2s ease;
-            opacity: 0.85;
-        }
-        .scroll-btn:hover {
-            background: var(--main-orange); color: #fff;
-            box-shadow: 0 4px 16px rgba(230, 138, 0, 0.3);
-            opacity: 1;
-        }
-        .scroll-btn.left { left: -6px; }
-        .scroll-btn.right { right: -6px; }
-
-        /* 지점 카드 */
+        .sidebar-header h2 { font-size: 22px; font-weight: 800; margin: 0; }
+        .sidebar-header span { color: var(--main-orange); }
+        
         .branch-card {
-            flex: 0 0 210px;
             background-color: #ffffff; border: 1px solid var(--border-color);
-            border-radius: 14px; padding: 18px 16px; cursor: pointer;
-            transition: all 0.3s ease; position: relative;
+            border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.3s ease; position: relative;
+        }
+        .branch-card::after {
+            content: "홈페이지 방문 →"; position: absolute; right: 20px; bottom: 20px;
+            font-size: 13px; font-weight: 700; color: var(--main-orange);
+            opacity: 0; transform: translateX(-10px); transition: all 0.3s ease;
         }
         .branch-card:hover, .branch-card.active {
-            border-color: var(--main-orange);
-            box-shadow: 0 8px 20px rgba(230, 138, 0, 0.1);
-            transform: translateY(-3px);
+            border-color: var(--main-orange); box-shadow: 0 10px 25px rgba(230, 138, 0, 0.08); transform: translateY(-2px);
         }
-        .branch-card .visit-link {
-            display: block; margin-top: 10px;
-            font-size: 12px; font-weight: 700; color: var(--main-orange);
-            opacity: 0; transform: translateX(-6px); transition: all 0.3s ease;
-        }
-        .branch-card:hover .visit-link, .branch-card.active .visit-link {
-            opacity: 1; transform: translateX(0);
-        }
+        .branch-card:hover::after, .branch-card.active::after { opacity: 1; transform: translateX(0); }
         
-        .branch-name {
-            font-size: 16px; font-weight: 800; margin-bottom: 4px;
-            display: flex; align-items: center; gap: 6px; white-space: nowrap;
-        }
-        .branch-name .badge {
-            font-size: 10px; background-color: var(--bg-light); color: var(--sub-text);
-            padding: 2px 7px; border-radius: 4px; font-weight: 500;
-        }
-        .branch-card:hover .badge, .branch-card.active .badge {
-            background-color: rgba(230, 138, 0, 0.1); color: var(--main-orange);
-        }
-        .branch-info {
-            font-size: 13px; color: var(--sub-text); line-height: 1.5; word-break: keep-all;
-        }
+        .branch-name { font-size: 18px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .branch-name .badge { font-size: 11px; background-color: var(--bg-light); color: var(--sub-text); padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+        .branch-card:hover .badge, .branch-card.active .badge { background-color: rgba(230, 138, 0, 0.1); color: var(--main-orange); }
+        .branch-info { font-size: 14px; color: var(--sub-text); line-height: 1.5; }
 
-        /* 카드 사이 구분선 (서울경기 / 전국 구분) */
-        .card-divider {
-            flex: 0 0 1px;
-            align-self: stretch;
-            background: linear-gradient(to bottom, transparent, var(--main-orange), transparent);
-            margin: 0 6px;
-            border-radius: 2px;
-        }
-
-        /* ========================================== */
-        /* 6. 반응형 */
-        /* ========================================== */
-        @media screen and (max-width: 900px) {
-            .maps-row {
-                flex-direction: column;
-                gap: 30px;
-            }
-            /* 세로 배치 시 지도 높이를 충분히 확보 */
-            :root { --map-height: 520px; }
-            .map-wrapper { padding: 16px; }
-            .intro-section h1 { font-size: 26px; }
-            .branch-card { flex: 0 0 185px; }
-
-            /* 모바일에서 핀 크기 확대 */
-            .pin-dot {
-                width: 18px; height: 18px;
-                border: 3px solid #ffffff;
-            }
-            .pin-label {
-                font-size: 14px; padding: 6px 14px;
-            }
-            /* 모바일에서는 라벨 항상 표시 (터치 환경이라 hover 없음) */
-            .map-pin .pin-label {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                pointer-events: auto;
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            :root { --map-height: 420px; }
-            .intro-section h1 { font-size: 22px; }
-            .intro-section p { font-size: 15px; }
-            .page-content { padding: 0 12px 60px 12px; }
-            .region-header h2, .cards-section-header h2 { font-size: 17px; }
-            .branch-card { flex: 0 0 165px; padding: 14px 12px; }
-            .branch-name { font-size: 14px; }
-            .branch-info { font-size: 12px; }
-            .map-wrapper { padding: 12px; border-radius: 16px; }
-
-            /* 핀 더 크게 */
-            .pin-dot {
-                width: 20px; height: 20px;
-                border: 3px solid #ffffff;
-                box-shadow: 0 0 12px rgba(230, 138, 0, 0.5);
-            }
-            .pin-label {
-                font-size: 13px; padding: 5px 10px;
-                margin-top: 4px;
-            }
+        @media screen and (max-width: 768px) {
+            .container { flex-direction: column; gap: 30px; }
+            .map-wrapper { width: 100%; padding: 20px; min-height: 350px; }
+            .branch-sidebar { width: 100%; max-height: 500px; }
+            .intro-section h1 { font-size: 28px; }
         }
     </style>
 </head>
@@ -327,146 +147,76 @@
         <p>가까운 지점을 선택하시면, 동일한 고품질 의료 서비스를 예약하실 수 있습니다.</p>
     </section>
 
-    <div class="page-content">
+    <div class="container">
+        <!-- [좌측] 대한민국 전국 일러스트 지도 -->
+        <div class="map-wrapper">
+            <!-- 💡 준비하신 전국 일러스트 지도 이미지 파일명(korea_map.png 등)을 연결해 주세요 -->
+            <img src="korea_map.png" alt="대한민국 지도 일러스트" style="width: 100%; max-width: 400px; height: auto;">
 
-        <!-- ===== 지도 두 개 나란히 ===== -->
-        <div class="maps-row">
-
-            <!-- 좌: 서울·경기 -->
-            <div class="map-column">
-                <div class="region-header">
-                    <h2><span>서울·경기</span> 지점</h2>
-                    <span class="region-badge">9곳</span>
-                    <div class="region-header-line"></div>
-                </div>
-                <div class="map-wrapper">
-                    <div class="map-layer">
-                        <img src="seoul_map.png" alt="서울 경기 지도">
-                        <div class="map-pin" style="top: 60%; left: 35%;" data-target="branch01"><span class="pin-dot"></span><span class="pin-label">안산점</span></div>
-                        <div class="map-pin" style="top: 70%; left: 55%;" data-target="branch02"><span class="pin-dot"></span><span class="pin-label">동탄점</span></div>
-                        <div class="map-pin" style="top: 45%; left: 40%;" data-target="branch03"><span class="pin-dot"></span><span class="pin-label">구로점</span></div>
-                        <div class="map-pin" style="top: 40%; left: 45%;" data-target="branch04"><span class="pin-dot"></span><span class="pin-label">서대문점</span></div>
-                        <div class="map-pin" style="top: 55%; left: 32%;" data-target="branch05"><span class="pin-dot"></span><span class="pin-label">시흥점</span></div>
-                        <div class="map-pin" style="top: 53%; left: 45%;" data-target="branch06"><span class="pin-dot"></span><span class="pin-label">안양점</span></div>
-                        <div class="map-pin" style="top: 50%; left: 58%;" data-target="branch08"><span class="pin-dot"></span><span class="pin-label">복정점</span></div>
-                        <div class="map-pin" style="top: 58%; left: 28%;" data-target="branch09"><span class="pin-dot"></span><span class="pin-label">시흥장현점</span></div>
-                        <div class="map-pin" style="top: 25%; left: 35%;" data-target="branch10"><span class="pin-dot"></span><span class="pin-label">문산점</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 우: 전국 -->
-            <div class="map-column">
-                <div class="region-header">
-                    <h2><span>전국 기타</span> 지점</h2>
-                    <span class="region-badge">3곳</span>
-                    <div class="region-header-line"></div>
-                </div>
-                <div class="map-wrapper">
-                    <div class="map-layer">
-                        <img src="korea_map.png" alt="전국 지도">
-                        <div class="map-pin" style="top: 48%; left: 52%;" data-target="branch07"><span class="pin-dot"></span><span class="pin-label">청주점</span></div>
-                        <div class="map-pin" style="top: 62%; left: 38%;" data-target="branch11"><span class="pin-dot"></span><span class="pin-label">전주송천점</span></div>
-                        <div class="map-pin" style="top: 66%; left: 37%;" data-target="branch12"><span class="pin-dot"></span><span class="pin-label">전주중화산점</span></div>
-                    </div>
-                </div>
-            </div>
-
+            <!-- 📌 대략적인 전국 지도 핀 위치 (서울/경기 지역은 오밀조밀하게 배치됨) -->
+            <div class="map-pin" style="top: 18%; left: 34%;" data-target="branch10"><span class="pin-dot"></span><span class="pin-label">문산점</span></div>
+            <div class="map-pin" style="top: 22%; left: 36%;" data-target="branch04"><span class="pin-dot"></span><span class="pin-label">서대문점</span></div>
+            <div class="map-pin" style="top: 24%; left: 35%;" data-target="branch03"><span class="pin-dot"></span><span class="pin-label">구로점</span></div>
+            <div class="map-pin" style="top: 25%; left: 39%;" data-target="branch08"><span class="pin-dot"></span><span class="pin-label">복정점</span></div>
+            <div class="map-pin" style="top: 26%; left: 36%;" data-target="branch06"><span class="pin-dot"></span><span class="pin-label">안양점</span></div>
+            <div class="map-pin" style="top: 26%; left: 33%;" data-target="branch05"><span class="pin-dot"></span><span class="pin-label">시흥점</span></div>
+            <div class="map-pin" style="top: 28%; left: 33%;" data-target="branch09"><span class="pin-dot"></span><span class="pin-label">시흥장현점</span></div>
+            <div class="map-pin" style="top: 29%; left: 34%;" data-target="branch01"><span class="pin-dot"></span><span class="pin-label">안산점</span></div>
+            <div class="map-pin" style="top: 31%; left: 37%;" data-target="branch02"><span class="pin-dot"></span><span class="pin-label">동탄점</span></div>
+            
+            <div class="map-pin" style="top: 45%; left: 45%;" data-target="branch07"><span class="pin-dot"></span><span class="pin-label">청주점</span></div>
+            
+            <div class="map-pin" style="top: 60%; left: 35%;" data-target="branch11"><span class="pin-dot"></span><span class="pin-label">전주송천점</span></div>
+            <div class="map-pin" style="top: 62%; left: 34%;" data-target="branch12"><span class="pin-dot"></span><span class="pin-label">전주중화산점</span></div>
         </div>
 
-        <!-- ===== 통합 카드 영역 ===== -->
-        <div class="cards-section-header">
-            <h2><span>전체</span> 지점 안내</h2>
-            <span class="region-badge">12곳</span>
-            <div class="region-header-line"></div>
-        </div>
-
-        <div class="card-scroll-area">
-            <button class="scroll-btn left" onclick="scrollCards(-1)">◀</button>
-            <div class="card-scroll-track" id="mainCardTrack">
-
-                <!-- 서울·경기 9곳 -->
-                <div class="branch-card" data-id="branch01" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">안산점 <span class="badge">경기</span></div>
-                    <div class="branch-info">경기도 안산시 단원구 고잔로<br>031-123-4567</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch02" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">동탄점 <span class="badge">경기</span></div>
-                    <div class="branch-info">경기도 화성시 동탄솔빛로 47<br>031-8003-3653</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch03" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">구로점 <span class="badge">서울</span></div>
-                    <div class="branch-info">서울특별시 구로구 구로동<br>02-123-4567</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch04" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">서대문점 <span class="badge">서울</span></div>
-                    <div class="branch-info">서울특별시 서대문구 충정로<br>02-234-5678</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch05" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">시흥점 <span class="badge">경기</span></div>
-                    <div class="branch-info">경기도 시흥시 정왕동<br>031-345-6789</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch06" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">안양점 <span class="badge">경기</span></div>
-                    <div class="branch-info">경기도 안양시 만안구 안양로<br>031-456-7890</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch08" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">복정점 <span class="badge">경기</span></div>
-                    <div class="branch-info">경기도 성남시 수정구 복정로<br>031-567-8901</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch09" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">시흥장현점 <span class="badge">경기</span></div>
-                    <div class="branch-info">경기도 시흥시 장현동<br>031-678-9012</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch10" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">문산점 <span class="badge">경기</span></div>
-                    <div class="branch-info">경기도 파주시 문산읍<br>031-789-0123</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-
-                <!-- 구분선 -->
-                <div class="card-divider"></div>
-
-                <!-- 전국 기타 3곳 -->
-                <div class="branch-card" data-id="branch07" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">청주점 <span class="badge">충북</span></div>
-                    <div class="branch-info">충청북도 청주시 상당구<br>043-123-4567</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch11" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">전주송천점 <span class="badge">전북</span></div>
-                    <div class="branch-info">전북특별자치도 전주시 송천동<br>063-123-4567</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-                <div class="branch-card" data-id="branch12" onclick="window.open('#', '_blank')">
-                    <div class="branch-name">전주중화산점 <span class="badge">전북</span></div>
-                    <div class="branch-info">전북특별자치도 전주시 중화산동<br>063-234-5678</div>
-                    <span class="visit-link">홈페이지 방문 →</span>
-                </div>
-
+        <!-- [우측] 지점 상세 리스트 (12곳 전체 노출) -->
+        <div class="branch-sidebar">
+            <div class="sidebar-header">
+                <h2 id="sidebar-title">전국 지점 리스트 <span>(12곳)</span></h2>
             </div>
-            <button class="scroll-btn right" onclick="scrollCards(1)">▶</button>
-        </div>
 
+            <div class="branch-card" data-id="branch01" onclick="window.open('#', '_blank')">
+                <div class="branch-name">안산점 <span class="badge">경기</span></div><div class="branch-info">경기도 안산시 단원구 고잔로<br>031-123-4567</div>
+            </div>
+            <div class="branch-card" data-id="branch02" onclick="window.open('https://booking.naver.com/', '_blank')">
+                <div class="branch-name">동탄점 <span class="badge">경기</span></div><div class="branch-info">경기도 화성시 동탄솔빛로 47<br>031-8003-3653</div>
+            </div>
+            <div class="branch-card" data-id="branch03" onclick="window.open('#', '_blank')">
+                <div class="branch-name">구로점 <span class="badge">서울</span></div><div class="branch-info">서울특별시 구로구 구로동<br>02-123-4567</div>
+            </div>
+            <div class="branch-card" data-id="branch04" onclick="window.open('#', '_blank')">
+                <div class="branch-name">서대문점 <span class="badge">서울</span></div><div class="branch-info">서울특별시 서대문구 충정로<br>02-234-5678</div>
+            </div>
+            <div class="branch-card" data-id="branch05" onclick="window.open('#', '_blank')">
+                <div class="branch-name">시흥점 <span class="badge">경기</span></div><div class="branch-info">경기도 시흥시 정왕동<br>031-345-6789</div>
+            </div>
+            <div class="branch-card" data-id="branch06" onclick="window.open('#', '_blank')">
+                <div class="branch-name">안양점 <span class="badge">경기</span></div><div class="branch-info">경기도 안양시 만안구 안양로<br>031-456-7890</div>
+            </div>
+            <div class="branch-card" data-id="branch07" onclick="window.open('#', '_blank')">
+                <div class="branch-name">청주점 <span class="badge">충북</span></div><div class="branch-info">충청북도 청주시 상당구<br>043-123-4567</div>
+            </div>
+            <div class="branch-card" data-id="branch08" onclick="window.open('#', '_blank')">
+                <div class="branch-name">복정점 <span class="badge">경기</span></div><div class="branch-info">경기도 성남시 수정구 복정로<br>031-567-8901</div>
+            </div>
+            <div class="branch-card" data-id="branch09" onclick="window.open('#', '_blank')">
+                <div class="branch-name">시흥장현점 <span class="badge">경기</span></div><div class="branch-info">경기도 시흥시 장현동<br>031-678-9012</div>
+            </div>
+            <div class="branch-card" data-id="branch10" onclick="window.open('#', '_blank')">
+                <div class="branch-name">문산점 <span class="badge">경기</span></div><div class="branch-info">경기도 파주시 문산읍<br>031-789-0123</div>
+            </div>
+            <div class="branch-card" data-id="branch11" onclick="window.open('#', '_blank')">
+                <div class="branch-name">전주송천점 <span class="badge">전북</span></div><div class="branch-info">전북특별자치도 전주시 송천동<br>063-123-4567</div>
+            </div>
+            <div class="branch-card" data-id="branch12" onclick="window.open('#', '_blank')">
+                <div class="branch-name">전주중화산점 <span class="badge">전북</span></div><div class="branch-info">전북특별자치도 전주시 중화산동<br>063-234-5678</div>
+            </div>
+        </div>
     </div>
 
     <!-- 인터랙션 스크립트 -->
     <script>
-        // 1. 카드 좌우 스크롤
-        function scrollCards(direction) {
-            const track = document.getElementById('mainCardTrack');
-            track.scrollBy({ left: direction * 230, behavior: 'smooth' });
-        }
-
-        // 2. 지도 핀 ↔ 카드 연동
         const pins = document.querySelectorAll('.map-pin');
         const cards = document.querySelectorAll('.branch-card');
 
@@ -474,9 +224,9 @@
             pin.addEventListener('mouseenter', () => {
                 const targetId = pin.getAttribute('data-target');
                 const targetCard = document.querySelector(`.branch-card[data-id="${targetId}"]`);
-                if (targetCard) {
+                if(targetCard) {
                     targetCard.classList.add('active');
-                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });
             pin.addEventListener('mouseleave', () => {
@@ -488,7 +238,7 @@
             card.addEventListener('mouseenter', () => {
                 const id = card.getAttribute('data-id');
                 const targetPin = document.querySelector(`.map-pin[data-target="${id}"]`);
-                if (targetPin) targetPin.classList.add('active');
+                if(targetPin) targetPin.classList.add('active');
             });
             card.addEventListener('mouseleave', () => {
                 pins.forEach(pin => pin.classList.remove('active'));
