@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -143,8 +143,8 @@
     </header>
 
     <section class="intro-section">
-        <h1>비수술 척추관절 치료, <span>전국 12개 지점 안내</span></h1>
-        <p>가까운 지점을 선택하시면, 동일한 고품질 의료 서비스를 예약하실 수 있습니다.</p>
+        <h1>당신이라는 <span style="color: #03C75A;">나무</span>에<br><span style="color: var(--main-orange);">따뜻한 해</span>를 비춥니다.</h1>
+        <p>가까운 지점을 선택하시고, 고품질 의료 서비스를 받아보세요.</p>
     </section>
 
     <div class="container">
@@ -154,20 +154,20 @@
             <img src="korea_map.png" alt="대한민국 지도 일러스트" style="width: 100%; max-width: 400px; height: auto;">
 
             <!-- 📌 대략적인 전국 지도 핀 위치 (서울/경기 지역은 오밀조밀하게 배치됨) -->
-            <div class="map-pin" style="top: 18%; left: 34%;" data-target="branch10"><span class="pin-dot"></span><span class="pin-label">문산점</span></div>
-            <div class="map-pin" style="top: 22%; left: 36%;" data-target="branch04"><span class="pin-dot"></span><span class="pin-label">서대문점</span></div>
-            <div class="map-pin" style="top: 24%; left: 35%;" data-target="branch03"><span class="pin-dot"></span><span class="pin-label">구로점</span></div>
-            <div class="map-pin" style="top: 25%; left: 39%;" data-target="branch08"><span class="pin-dot"></span><span class="pin-label">복정점</span></div>
-            <div class="map-pin" style="top: 26%; left: 36%;" data-target="branch06"><span class="pin-dot"></span><span class="pin-label">안양점</span></div>
-            <div class="map-pin" style="top: 26%; left: 33%;" data-target="branch05"><span class="pin-dot"></span><span class="pin-label">시흥점</span></div>
-            <div class="map-pin" style="top: 28%; left: 33%;" data-target="branch09"><span class="pin-dot"></span><span class="pin-label">시흥장현점</span></div>
-            <div class="map-pin" style="top: 29%; left: 34%;" data-target="branch01"><span class="pin-dot"></span><span class="pin-label">안산점</span></div>
-            <div class="map-pin" style="top: 31%; left: 37%;" data-target="branch02"><span class="pin-dot"></span><span class="pin-label">동탄점</span></div>
+            <div class="map-pin" style="top: 15%; left: 40%;" data-target="branch10"><span class="pin-dot"></span><span class="pin-label">문산점</span></div>
+            <div class="map-pin" style="top: 20%; left: 42%;" data-target="branch04"><span class="pin-dot"></span><span class="pin-label">서대문점</span></div>
+            <div class="map-pin" style="top: 24%; left: 45%;" data-target="branch03"><span class="pin-dot"></span><span class="pin-label">구로점</span></div>
+            <div class="map-pin" style="top: 28%; left: 50%;" data-target="branch08"><span class="pin-dot"></span><span class="pin-label">복정점</span></div>
+            <div class="map-pin" style="top: 26%; left: 40%;" data-target="branch06"><span class="pin-dot"></span><span class="pin-label">안양점</span></div>
+            <div class="map-pin" style="top: 28%; left: 34%;" data-target="branch05"><span class="pin-dot"></span><span class="pin-label">시흥점</span></div>
+            <div class="map-pin" style="top: 30%; left: 37%;" data-target="branch09"><span class="pin-dot"></span><span class="pin-label">시흥장현점</span></div>
+            <div class="map-pin" style="top: 32%; left: 42%;" data-target="branch01"><span class="pin-dot"></span><span class="pin-label">안산점</span></div>
+            <div class="map-pin" style="top: 35%; left: 47%;" data-target="branch02"><span class="pin-dot"></span><span class="pin-label">동탄점</span></div>
             
             <div class="map-pin" style="top: 45%; left: 45%;" data-target="branch07"><span class="pin-dot"></span><span class="pin-label">청주점</span></div>
             
-            <div class="map-pin" style="top: 60%; left: 35%;" data-target="branch11"><span class="pin-dot"></span><span class="pin-label">전주송천점</span></div>
-            <div class="map-pin" style="top: 62%; left: 34%;" data-target="branch12"><span class="pin-dot"></span><span class="pin-label">전주중화산점</span></div>
+            <div class="map-pin" style="top: 60%; left: 40%;" data-target="branch11"><span class="pin-dot"></span><span class="pin-label">전주송천점</span></div>
+            <div class="map-pin" style="top: 62%; left: 45%;" data-target="branch12"><span class="pin-dot"></span><span class="pin-label">전주중화산점</span></div>
         </div>
 
         <!-- [우측] 지점 상세 리스트 (12곳 전체 노출) -->
@@ -219,6 +219,7 @@
     <script>
         const pins = document.querySelectorAll('.map-pin');
         const cards = document.querySelectorAll('.branch-card');
+        const sidebar = document.querySelector('.branch-sidebar'); // 우측 리스트 공간 지정
 
         pins.forEach(pin => {
             pin.addEventListener('mouseenter', () => {
@@ -226,7 +227,18 @@
                 const targetCard = document.querySelector(`.branch-card[data-id="${targetId}"]`);
                 if(targetCard) {
                     targetCard.classList.add('active');
-                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // 💡 핵심 수정: 홈페이지 전체 스크롤을 막고, 우측 리스트 안에서만 중앙으로 오도록 직접 위치를 계산함
+                    const cardRect = targetCard.getBoundingClientRect();
+                    const sidebarRect = sidebar.getBoundingClientRect();
+                    
+                    // 해당 카드가 리스트의 정중앙에 오도록 계산
+                    const scrollOffset = sidebar.scrollTop + (cardRect.top - sidebarRect.top) - (sidebarRect.height / 2) + (cardRect.height / 2);
+                    
+                    sidebar.scrollTo({
+                        top: scrollOffset,
+                        behavior: 'smooth'
+                    });
                 }
             });
             pin.addEventListener('mouseleave', () => {
